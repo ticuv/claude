@@ -64,6 +64,8 @@ img {
     text-transform: uppercase;
     line-height: 1;
     position: relative;
+    opacity: 0;
+    transform: scale(0.9);
 }
 
 /* Scroll Indicator */
@@ -139,6 +141,7 @@ img {
     margin: 0 auto;
     overflow: hidden;
     border-radius: 4px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .project-image {
@@ -188,7 +191,315 @@ img {
 }
 
 /* ========================================
-   PHASE 3: FOOTER / CTA SECTION
+   LOADING SCREEN
+   ======================================== */
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #050505;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-logo {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeInLogo 1s ease forwards;
+}
+
+@keyframes fadeInLogo {
+    to { opacity: 1; }
+}
+
+.loading-bar {
+    width: 300px;
+    height: 2px;
+    background-color: #1a1a1a;
+    margin: 0 auto 1rem;
+    overflow: hidden;
+}
+
+.loading-progress {
+    height: 100%;
+    background-color: #ffffff;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.loading-percentage {
+    font-size: 0.875rem;
+    letter-spacing: 0.2em;
+    color: #888888;
+    font-weight: 300;
+}
+
+/* ========================================
+   CUSTOM CURSOR
+   ======================================== */
+
+.custom-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    mix-blend-mode: difference;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease;
+}
+
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+}
+
+.custom-cursor.hover .cursor-dot {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-cursor.hover .cursor-outline {
+    width: 60px;
+    height: 60px;
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .custom-cursor {
+        display: none;
+    }
+}
+
+/* ========================================
+   GRAIN TEXTURE OVERLAY
+   ======================================== */
+
+.grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+}
+
+/* ========================================
+   SOUND TOGGLE
+   ======================================== */
+
+.sound-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.sound-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.sound-icon {
+    font-size: 1.25rem;
+    filter: grayscale(1);
+}
+
+/* ========================================
+   PHASE 3: ABOUT SECTION
+   ======================================== */
+
+.about-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15vh 5vw;
+    background-color: #050505;
+}
+
+.about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: #666666;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+.about-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 3rem;
+    color: #ffffff;
+    max-width: 900px;
+}
+
+.about-text {
+    max-width: 700px;
+    margin-bottom: 4rem;
+}
+
+.about-text p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.8;
+    color: #cccccc;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+}
+
+.about-text .highlight {
+    color: #ffffff;
+    font-weight: 500;
+    position: relative;
+}
+
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 600px;
+}
+
+.stat-item {
+    text-align: left;
+}
+
+.stat-number {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+    color: #666666;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+/* ========================================
+   HORIZONTAL SCROLL PROJECT
+   ======================================== */
+
+.horizontal-project {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-scroll-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.horizontal-scroll-container {
+    display: flex;
+    gap: 5vw;
+    will-change: transform;
+}
+
+.horizontal-project-image {
+    min-width: 50vw;
+    height: 60vh;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.horizontal-project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.horizontal-project-info {
+    min-width: 40vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 2rem;
+}
+
+.project-description {
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    line-height: 1.8;
+    color: #cccccc;
+    margin: 2rem 0;
+    max-width: 500px;
+}
+
+/* ========================================
+   PHASE 4: FOOTER / CTA SECTION
    ======================================== */
 
 .footer-section {
@@ -221,13 +532,44 @@ img {
     padding: 2rem;
 }
 
-/* Hover effect - outline style */
+/* Hover effect - outline style with glitch */
 .cta-link:hover .cta-text {
     color: transparent;
     -webkit-text-stroke: 2px #ffffff;
     text-stroke: 2px #ffffff;
     transform: scale(1.05);
     letter-spacing: 0.05em;
+    animation: glitch 0.3s ease infinite;
+}
+
+@keyframes glitch {
+    0%, 100% {
+        text-shadow: 0 0 0 transparent;
+    }
+    25% {
+        text-shadow: -2px 0 0 rgba(255, 0, 0, 0.3), 2px 0 0 rgba(0, 255, 255, 0.3);
+    }
+    50% {
+        text-shadow: 2px 0 0 rgba(255, 0, 0, 0.3), -2px 0 0 rgba(0, 255, 255, 0.3);
+    }
+    75% {
+        text-shadow: -2px 0 0 rgba(0, 255, 255, 0.3), 2px 0 0 rgba(255, 0, 0, 0.3);
+    }
+}
+
+.cta-text span {
+    display: inline-block;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-link:hover .cta-text span {
+    animation: charWave 0.5s ease infinite;
+    animation-delay: calc(var(--char-index) * 0.02s);
+}
+
+@keyframes charWave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
 
 /* ========================================
@@ -255,6 +597,50 @@ img {
 
     .project-tag {
         font-size: 0.875rem;
+    }
+
+    /* About section mobile */
+    .about-stats {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+    }
+
+    /* Horizontal scroll mobile - convert to vertical */
+    .horizontal-project {
+        height: auto;
+        padding: 10vh 0;
+    }
+
+    .horizontal-scroll-container {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .horizontal-project-image {
+        min-width: 100%;
+        height: 50vh;
+    }
+
+    .horizontal-project-info {
+        min-width: 100%;
+        padding: 0 1rem;
+    }
+
+    /* Sound toggle mobile */
+    .sound-toggle {
+        bottom: 1rem;
+        right: 1rem;
+        width: 45px;
+        height: 45px;
+    }
+
+    /* Loading screen mobile */
+    .loading-bar {
+        width: 80%;
     }
 }
 

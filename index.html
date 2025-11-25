@@ -13,6 +13,31 @@
 </head>
 <body>
 
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">TICUV</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-percentage">0%</div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-outline"></div>
+    </div>
+
+    <!-- GRAIN TEXTURE OVERLAY -->
+    <div class="grain-overlay"></div>
+
+    <!-- SOUND TOGGLE -->
+    <button class="sound-toggle" aria-label="Toggle sound">
+        <span class="sound-icon">🔇</span>
+    </button>
+
     <!-- PHASE 1: THE HERO -->
     <section id="hero" class="hero-section">
         <div class="hero-content">
@@ -41,16 +66,26 @@
             </div>
         </div>
 
-        <!-- Project 02 -->
-        <div class="project-item" data-project="2">
-            <div class="project-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&h=1200&fit=crop"
-                     alt="Digital Dreams - AI Generated"
-                     class="project-image">
-            </div>
-            <div class="project-info">
-                <h2 class="project-title">PROJECT_02 // DIGITAL DREAMS</h2>
-                <span class="project-tag">AI / VISUALS</span>
+        <!-- Project 02 - HORIZONTAL SCROLL -->
+        <div class="project-item horizontal-project" data-project="2">
+            <div class="horizontal-scroll-wrapper">
+                <div class="horizontal-scroll-container">
+                    <div class="horizontal-project-image">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&h=1200&fit=crop"
+                             alt="Digital Dreams - AI Generated"
+                             class="project-image">
+                    </div>
+                    <div class="horizontal-project-info">
+                        <h2 class="project-title">PROJECT_02 // DIGITAL DREAMS</h2>
+                        <p class="project-description">An exploration of AI-generated dreamscapes, where machine learning algorithms create surreal visual narratives that blur the line between consciousness and computation.</p>
+                        <span class="project-tag">AI / VISUALS</span>
+                    </div>
+                    <div class="horizontal-project-image">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&h=1200&fit=crop"
+                             alt="Digital Dreams Detail"
+                             class="project-image">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -82,7 +117,33 @@
 
     </section>
 
-    <!-- PHASE 3: THE FOOTER / CTA -->
+    <!-- PHASE 3: ABOUT SECTION -->
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <div class="about-label">WHO_IS_TICUV</div>
+            <h2 class="about-title">A DIGITAL ARTIST PUSHING THE BOUNDARIES OF VISUAL CREATION</h2>
+            <div class="about-text">
+                <p>Specializing in <span class="highlight">3D Design</span>, <span class="highlight">AI-Generated Art</span>, and <span class="highlight">Visual Experiences</span> that challenge conventional aesthetics. Each project is a fusion of technical precision and creative vision.</p>
+                <p>From abstract renders to AI-powered dreamscapes, the work explores the intersection of human creativity and machine intelligence.</p>
+            </div>
+            <div class="about-stats">
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Years</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Iterations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHASE 4: THE FOOTER / CTA -->
     <section id="footer" class="footer-section">
         <a href="mailto:hello@ticuv.com" class="cta-link">
             <h2 class="cta-text">LET'S WORK<br>TOGETHER</h2>
