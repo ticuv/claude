@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticuv | Visual Experiments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=JetBrains+Mono:wght@300;400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #f0f0f0;
+            --accent-color: #888;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+        }
+
+        /* Typography System */
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            mix-blend-mode: difference;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        body:hover .cursor-outline.hovered {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-color: transparent;
+            mix-blend-mode: difference;
+        }
+
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+        .reveal-text span {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .is-visible .reveal-text span {
+            transform: translateY(0);
+        }
+
+        /* Glitch Effect Container */
+        .glitch-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .glitch-container:hover .glitch-img {
+            transform: scale(1.05);
+            filter: grayscale(0) contrast(1.1);
+        }
+        .glitch-img {
+            transition: transform 0.7s ease, filter 0.7s ease;
+            filter: grayscale(100%) contrast(0.9);
+        }
+
+        /* Layout Utilities */
+        .border-line {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Noise Overlay for Texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.07;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Noise Texture -->
+    <div class="noise-overlay"></div>
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Navigation (Minimal Corners) -->
+    <nav class="fixed w-full z-40 top-0 px-6 py-6 flex justify-between items-start mix-blend-difference text-white">
+        <a href="#" class="text-xl font-bold font-sans tracking-tighter hover-trigger" data-hover>TICUV<span class="text-xs align-top">©</span></a>
+
+        <div class="hidden md:flex flex-col items-end gap-1 font-mono text-xs uppercase tracking-widest">
+            <a href="#work" class="hover:line-through hover-trigger" data-hover>Selected Works</a>
+            <a href="#about" class="hover:line-through hover-trigger" data-hover>Profile</a>
+            <a href="#contact" class="hover:line-through hover-trigger" data-hover>Contact</a>
+        </div>
+
+        <!-- Mobile Menu Icon -->
+        <div class="md:hidden">
+            <button class="hover-trigger" data-hover><i data-lucide="menu"></i></button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center px-6 overflow-hidden section-observer">
+        <!-- Generative Background Layer -->
+        <canvas id="heroCanvas" class="absolute inset-0 z-0 opacity-40"></canvas>
+
+        <div class="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-12">
+                <h1 class="font-serif text-[15vw] leading-[0.8] mix-blend-exclusion text-white reveal-wrapper">
+                    <div class="reveal-text"><span>Digital</span></div>
+                    <div class="reveal-text pl-[10vw]"><span>Alchemy</span></div>
+                </h1>
+            </div>
+            <div class="md:col-span-4 md:col-start-9 mt-12">
+                <p class="font-mono text-xs md:text-sm text-gray-400 leading-relaxed reveal-wrapper">
+                    <div class="reveal-text"><span>[ SYSTEM STATUS: ONLINE ]</span></div>
+                    <br>
+                    <div class="reveal-text"><span>Ticuv is a multidisciplinary artist exploring</span></div>
+                    <div class="reveal-text"><span>the boundaries between organic chaos</span></div>
+                    <div class="reveal-text"><span>and structured code.</span></div>
+                </p>
+                <div class="mt-8 reveal-wrapper">
+                   <div class="reveal-text">
+                       <a href="#work" class="font-sans text-sm border border-white/20 px-6 py-3 rounded-full hover:bg-white hover:text-black transition-all hover-trigger" data-hover>Explore Portfolio</a>
+                   </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-6 left-6 font-mono text-[10px] text-gray-500">
+            SCROLL TO EXPLORE <br> 3D / WEBGL / GENERATIVE
+        </div>
+    </header>
+
+    <!-- Work Section -->
+    <section id="work" class="py-32 px-6 border-t border-white/5 bg-[#050505] relative z-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-24 border-line pb-4 section-observer">
+                <h2 class="font-sans text-4xl font-light tracking-tight reveal-wrapper">
+                    <div class="reveal-text"><span>Selected Works</span></div>
+                </h2>
+                <span class="font-mono text-xs text-gray-500 hidden md:block">(2023 — 2025)</span>
+            </div>
+
+            <!-- Asymmetrical Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-32">
+
+                <!-- Project 01 -->
+                <div class="group cursor-pointer hover-trigger" data-hover>
+                    <div class="glitch-container aspect-[4/5] bg-neutral-900 mb-6 overflow-hidden relative">
+                         <!-- Placeholder Abstract Geo -->
+                        <div class="glitch-img absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
+                    </div>
+                    <div class="flex justify-between items-start border-t border-white/10 pt-4">
+                        <div>
+                            <h3 class="font-serif text-3xl italic">Aether Void</h3>
+                            <p class="font-mono text-xs text-gray-500 mt-1">WebGL / Three.js</p>
+                        </div>
+                        <span class="font-mono text-xs border border-white/20 px-2 py-1 rounded-full">01</span>
+                    </div>
+                </div>
+
+                <!-- Project 02 (Offset) -->
+                <div class="group cursor-pointer md:mt-32 hover-trigger" data-hover>
+                    <div class="glitch-container aspect-square bg-neutral-900 mb-6 overflow-hidden relative">
+                         <div class="glitch-img absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                    </div>
+                    <div class="flex justify-between items-start border-t border-white/10 pt-4">
+                        <div>
+                            <h3 class="font-serif text-3xl italic">Neural Flora</h3>
+                            <p class="font-mono text-xs text-gray-500 mt-1">Generative / Houdini</p>
+                        </div>
+                        <span class="font-mono text-xs border border-white/20 px-2 py-1 rounded-full">02</span>
+                    </div>
+                </div>
+
+                <!-- Project 03 -->
+                <div class="group cursor-pointer hover-trigger" data-hover>
+                    <div class="glitch-container aspect-video bg-neutral-900 mb-6 overflow-hidden relative">
+                         <div class="glitch-img absolute inset-0 bg-[url('https://images.unsplash.com/photo-1633511090164-b43840ea1607?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                    </div>
+                    <div class="flex justify-between items-start border-t border-white/10 pt-4">
+                        <div>
+                            <h3 class="font-serif text-3xl italic">Chrome Type</h3>
+                            <p class="font-mono text-xs text-gray-500 mt-1">Typography / Blender</p>
+                        </div>
+                        <span class="font-mono text-xs border border-white/20 px-2 py-1 rounded-full">03</span>
+                    </div>
+                </div>
+
+                 <!-- Project 04 (Offset) -->
+                 <div class="group cursor-pointer md:mt-24 hover-trigger" data-hover>
+                    <div class="glitch-container aspect-[3/4] bg-neutral-900 mb-6 overflow-hidden relative">
+                        <div class="glitch-img absolute inset-0 bg-[url('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+                    </div>
+                    <div class="flex justify-between items-start border-t border-white/10 pt-4">
+                        <div>
+                            <h3 class="font-serif text-3xl italic">Data Moss</h3>
+                            <p class="font-mono text-xs text-gray-500 mt-1">Simulation / Code</p>
+                        </div>
+                        <span class="font-mono text-xs border border-white/20 px-2 py-1 rounded-full">04</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Manifesto Section -->
+    <section id="about" class="py-32 px-6 border-t border-white/5 bg-[#080808] relative z-20">
+        <div class="max-w-4xl mx-auto text-center section-observer">
+            <p class="font-mono text-xs text-gray-500 mb-8 uppercase tracking-[0.2em] reveal-wrapper">
+                <div class="reveal-text"><span>Manifesto</span></div>
+            </p>
+            <h2 class="font-serif text-4xl md:text-6xl leading-tight text-white mb-12 reveal-wrapper">
+                <div class="reveal-text"><span>"I believe that code is a material.</span></div>
+                <div class="reveal-text"><span class="text-gray-500 italic">Like clay or marble,</span></div>
+                <div class="reveal-text"><span>it can be sculpted into</span></div>
+                <div class="reveal-text"><span>living, breathing forms."</span></div>
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-left mt-24 border-t border-white/10 pt-12">
+                <div>
+                    <h4 class="font-mono text-xs text-gray-500 mb-2">EXPERTISE</h4>
+                    <ul class="font-sans text-sm text-gray-300 space-y-1">
+                        <li>Creative Direction</li>
+                        <li>3D Motion</li>
+                        <li>Generative Design</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-mono text-xs text-gray-500 mb-2">STACK</h4>
+                    <ul class="font-sans text-sm text-gray-300 space-y-1">
+                        <li>Three.js / WebGL</li>
+                        <li>Blender / Cycles</li>
+                        <li>TouchDesigner</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-mono text-xs text-gray-500 mb-2">CLIENTS</h4>
+                    <ul class="font-sans text-sm text-gray-300 space-y-1">
+                        <li>Future Corp</li>
+                        <li>Neon Studio</li>
+                        <li>Archived.sys</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-mono text-xs text-gray-500 mb-2">SOCIAL</h4>
+                    <ul class="font-sans text-sm text-gray-300 space-y-1">
+                        <li><a href="#" class="hover:text-white hover-trigger" data-hover>Instagram ↗</a></li>
+                        <li><a href="#" class="hover:text-white hover-trigger" data-hover>Twitter ↗</a></li>
+                        <li><a href="#" class="hover:text-white hover-trigger" data-hover>Github ↗</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="min-h-[50vh] flex flex-col justify-between px-6 py-12 bg-black border-t border-white/5 relative overflow-hidden section-observer">
+        <!-- Big Contact Text -->
+        <div class="flex-grow flex items-center justify-center relative z-10">
+            <a href="mailto:hello@ticuv.art" class="group relative block hover-trigger" data-hover>
+                <h2 class="font-serif text-[12vw] leading-none text-white transition-opacity duration-500 group-hover:opacity-50">
+                    Let's Talk
+                </h2>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <span class="font-mono text-sm bg-white text-black px-4 py-2 rounded-full">COPY EMAIL</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="flex justify-between items-end font-mono text-xs text-gray-600 uppercase">
+            <div>
+                <span class="block text-gray-400 mb-1">Local Time</span>
+                <span id="timeDisplay">00:00:00</span>
+            </div>
+            <div class="text-right">
+                <span class="block">© 2025 Ticuv</span>
+                <span class="block">All Rights Reserved</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // --- Custom Cursor Logic ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const hoverTriggers = document.querySelectorAll('.hover-trigger'); // Elements that trigger cursor expansion
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with slight delay (handled by CSS transition usually, but let's keyframe it for smoothness)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover States for Cursor
+        hoverTriggers.forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => {
+                cursorOutline.classList.add('hovered');
+            });
+            trigger.addEventListener('mouseleave', () => {
+                cursorOutline.classList.remove('hovered');
+            });
+        });
+
+
+        // --- Intersection Observer for Text Reveals ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Optional: stop observing once revealed
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-observer').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Auto-trigger hero animation on load
+        window.addEventListener('load', () => {
+            document.querySelector('header').classList.add('is-visible');
+        });
+
+
+        // --- Time Display ---
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('timeDisplay').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+
+        // --- Advanced Canvas Background (Flow Field) ---
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = 0;
+                this.vy = 0;
+                this.speed = Math.random() * 0.5 + 0.2;
+                this.angle = 0;
+                this.size = Math.random() * 1.5;
+            }
+
+            update() {
+                // Simple flow field math based on sine waves
+                const scale = 0.002;
+                this.angle = (Math.cos(this.x * scale) + Math.sin(this.y * scale)) * Math.PI;
+
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wrap around screen
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+                if (this.y > height) this.y = 0;
+                if (this.y < 0) this.y = height;
+            }
+
+            draw() {
+                ctx.fillStyle = "rgba(100, 100, 100, 0.4)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor((width * height) / 10000); // Density based on screen size
+            for(let i=0; i<count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            initParticles();
+        });
+
+        resize();
+        initParticles();
+        animate();
+
+    </script>
+</body>
+</html>
